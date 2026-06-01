@@ -1,0 +1,50 @@
+0: Pipeline(
+	0: RandomForestClassifier(bootstrap=False, class_weight='balanced',
+                       max_features=0.5448096594153538, min_samples_leaf=5,
+                       min_samples_split=11, n_estimators=90, random_state=0)
+) -> Fitness: 0.8752410098357567
+
+1: Pipeline(
+	0: MaxAbsScaler()
+	1: VarianceThreshold()
+	2: MinMaxScaler()
+	3: RandomForestClassifier(bootstrap=False, class_weight='balanced',
+                       max_features=0.5448096594153538, min_samples_leaf=5,
+                       min_samples_split=11, n_estimators=90, random_state=0)
+) -> Fitness: 0.8752410098357567
+
+2: Pipeline(
+	0: AdaBoostClassifier(algorithm='SAMME',
+                   estimator=DecisionTreeClassifier(class_weight='balanced',
+                                                    max_depth=27,
+                                                    max_features=0.3499231573592565,
+                                                    min_samples_leaf=19,
+                                                    min_samples_split=17,
+                                                    random_state=0),
+                   learning_rate=0.6118982857322471, n_estimators=83,
+                   random_state=0)
+) -> Fitness: 0.8711483170342893
+
+3: Pipeline(
+	0: Nystroem(coef0=0.22987421753957737, degree=3, gamma=2.494981993578305,
+         kernel='poly', n_components=99, random_state=0)
+	1: AdaBoostClassifier(algorithm='SAMME',
+                   estimator=DecisionTreeClassifier(class_weight='balanced',
+                                                    max_depth=17,
+                                                    max_features=0.48919913512172475,
+                                                    min_samples_leaf=10,
+                                                    min_samples_split=13,
+                                                    random_state=0),
+                   learning_rate=0.8491507755001704, n_estimators=38,
+                   random_state=0)
+) -> Fitness: 0.8631909853321404
+
+4: Pipeline(
+	0: RandomForestClassifier(bootstrap=False, class_weight='balanced_subsample',
+                       max_features=0.5448096594153538, min_samples_leaf=5,
+                       min_samples_split=11, n_estimators=90, random_state=0)
+) -> Fitness: 0.8752410098357567
+
+Ensemble fitness: 0.8752410098357567
+Weights: [1.0, 1.0, 0.995323924775605, 0.9862323355873401, 1.0]
+Prediction: [1 1 1 ... 1 2 1]

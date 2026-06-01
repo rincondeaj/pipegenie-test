@@ -1,0 +1,63 @@
+<grammar>
+    <!--  Root -->
+    <root-symbol>workflow</root-symbol>
+     
+    <!-- Terminals -->
+    <terminals>
+
+        <!-- PREPROCESSING -->
+
+        <!-- scaler -->
+
+        <terminal name="minMaxScaler" type="scaler" code="sklearn.preprocessing.MinMaxScaler"/>
+            <terminal name="mms::argument" type="int" lower="1" upper="10" default="1" log="True"/>
+
+        <!-- CLASSIFIERS --> 
+
+        <!-- tree -->
+
+        <terminal name="decisionTree" type="tree" code="sklearn.tree.DecisionTreeClassifier"/>
+            
+        <!-- neighbors -->
+
+        <terminal name="kNN" type="neighbors" code="sklearn.neighbors.KNeighborsClassifier"/>
+            
+    </terminals>
+     
+    <!-- Non terminals: are represented as production rules -->
+    <non-terminals>
+ 
+        <!-- Structure definition -->
+        <non-terminal name="workflow">
+            <production-rule>preprocess;classifier</production-rule>
+        </non-terminal>
+ 
+        <!-- CLASSIFIERS -->
+        <non-terminal name="classifier">
+            <!-- neighbors -->
+            <production-rule>kNN</production-rule>
+            <!-- tree -->
+            <production-rule>decisionTree</production-rule>
+        </non-terminal>
+
+        <!-- PREPROCESSING -->
+        <non-terminal name="preprocess">
+            <!-- scaler -->
+            <production-rule>minMaxScaler(minMaxScaler_hp)</production-rule>
+        </non-terminal>
+
+        <!-- HYPERPARAMETERS -->
+        <non-terminal name="kNN_hp">
+            <production-rule>knn::n_neighbors</production-rule>
+        </non-terminal>
+
+        <non-terminal name="decisionTree_hp">
+            <production-rule>dt::max_depth</production-rule>
+        </non-terminal>
+
+        <non-terminal name="minMaxScaler_hp">
+            <production-rule>mms::argument</production-rule>
+        </non-terminal>
+
+    </non-terminals>
+</grammar>

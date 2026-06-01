@@ -1,0 +1,58 @@
+<grammar>
+    <!--  Root -->
+    <root-symbol>workflow</root-symbol>
+     
+    <!-- Terminals -->
+    <terminals>
+
+        <!-- PREPROCESSING -->
+
+        <!-- CLASSIFIERS --> 
+
+        <terminal name="decisionTree" type="tree" code="sklearn.tree.DecisionTreeClassifier"/>
+            <terminal name="dt::criterion" type="categorical" values="gini;entropy" default="gini"/>
+            <terminal name="dt::max_depth" type="int" lower="1" upper="30" default="10"/>
+            <terminal name="dt::min_samples_split" type="int" lower="2" upper="20" default="2"/>
+            <terminal name="dt::max_features" type="float" lower="0" upper="1" default="0.5"/>
+            <terminal name="dt::min_samples_leaf" type="int" lower="1" upper="20" default="1"/>
+            <terminal name="dt::class_weight" type="categorical" values="balanced" default="None"/>
+
+        <terminal name="adaBoost" type="ensemble" code="sklearn.ensemble.AdaBoostClassifier"/>
+            <terminal name="ada::estimator" type="estimator" estimators="none"/>
+            <terminal name="ada::n_estimators" type="int" lower="10" upper="100" default="50"/>
+            <terminal name="ada::learning_rate" type="float" lower="0.01" upper="2" default="0.1" log="True"/>
+            <terminal name="ada::algorithm" type="categorical" values="SAMME" default="SAMME"/>
+
+    </terminals>
+     
+    <!-- Non terminals: are represented as production rules -->
+    <non-terminals>
+ 
+        <!-- Structure definition -->
+        <non-terminal name="workflow">
+            <production-rule>classifier</production-rule>
+        </non-terminal>
+ 
+        <!-- CLASSIFIERS -->
+        <non-terminal name="classifier">
+            <production-rule>adaBoost(adaBoost_hp)</production-rule>
+        </non-terminal>
+
+        <!-- ESTIMATOR HYPERPARAMETER -->
+
+        <non-terminal name="estimators">
+            <production-rule>decisionTree(decisionTree_hp)</production-rule>
+        </non-terminal>
+
+        <!-- HYPERPARAMETERS -->
+
+        <non-terminal name="adaBoost_hp">
+            <production-rule>ada::estimator;ada::n_estimators;ada::learning_rate;ada::algorithm</production-rule>
+        </non-terminal>
+
+        <non-terminal name="decisionTree_hp">
+            <production-rule>dt::criterion;dt::max_depth;dt::min_samples_split;dt::max_features;dt::min_samples_leaf;dt::class_weight</production-rule>
+        </non-terminal>
+
+    </non-terminals>
+</grammar>

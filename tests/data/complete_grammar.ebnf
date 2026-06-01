@@ -1,0 +1,232 @@
+@root workflow
+
+#################################
+# ALGORITHMS
+#################################
+
+@algorithm minMaxScaler sklearn.preprocessing.MinMaxScaler scaler
+@algorithm maxAbsScaler sklearn.preprocessing.MaxAbsScaler scaler
+@algorithm robustScaler sklearn.preprocessing.RobustScaler scaler
+
+@algorithm nystroem sklearn.kernel_approximation.Nystroem featureAumentation
+
+@algorithm varianceThreshold sklearn.feature_selection.VarianceThreshold featureSelection
+@algorithm selectPercentile sklearn.feature_selection.SelectPercentile featureSelection
+@algorithm selectFwe sklearn.feature_selection.SelectFwe featureSelection
+
+@algorithm pca sklearn.decomposition.PCA featureExtraction
+@algorithm fastICA sklearn.decomposition.FastICA featureExtraction
+
+@algorithm decisionTree sklearn.tree.DecisionTreeClassifier tree
+@algorithm randomForest sklearn.ensemble.RandomForestClassifier tree
+@algorithm extraTreesClassifier sklearn.ensemble.ExtraTreesClassifier tree
+
+@algorithm adaBoost sklearn.ensemble.AdaBoostClassifier ensemble
+
+@algorithm kNN sklearn.neighbors.KNeighborsClassifier neighbors
+
+@algorithm gaussianNB sklearn.naive_bayes.GaussianNB bayes
+@algorithm bernoulliNB sklearn.naive_bayes.BernoulliNB bayes
+@algorithm multinomialNB sklearn.naive_bayes.MultinomialNB bayes
+
+@algorithm logisticRegression sklearn.linear_model.LogisticRegression linear
+
+@algorithm qda sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis discriminant
+@algorithm lda sklearn.discriminant_analysis.LinearDiscriminantAnalysis discriminant
+
+@algorithm mlpClassifier sklearn.neural_network.MLPClassifier neural
+
+
+#################################
+# HYPERPARAMETERS
+#################################
+
+@hyperparameter rs::with_centering bool default=True
+@hyperparameter rs::with_scaling bool default=True
+
+@hyperparameter nyss::kernel categorical values=rbf;cosine;sigmoid;poly default=rbf
+@hyperparameter nyss::gamma float log lower=3.0517578125e-05 upper=8.0 default=0.1
+@hyperparameter nyss::n_components int lower=10 upper=100 default=100
+@hyperparameter nyss::degree int lower=2 upper=5 default=2
+@hyperparameter nyss::coef0 float lower=-1.0 upper=1.0 default=0.0
+
+@hyperparameter sp::percentile float lower=1.0 upper=99.0 default=50.0
+
+@hyperparameter fwe::alpha float log lower=1e-3 upper=0.05 default=0.01
+
+@hyperparameter pca::n_components float lower=0.5 upper=0.9999 default=0.9999
+@hyperparameter pca::whiten bool default=False
+
+@hyperparameter ica::n_components int lower=2 upper=100 default=3
+@hyperparameter ica::algorithm categorical values=parallel;deflation default=parallel
+@hyperparameter ica::whiten categorical values=unit-variance;arbitrary-variance default=unit-variance
+@hyperparameter ica::fun categorical values=logcosh;exp;cube default=logcosh
+
+@hyperparameter dt::criterion categorical values=gini;entropy default=gini
+@hyperparameter dt::max_depth int lower=1 upper=30 default=10
+@hyperparameter dt::min_samples_split int lower=2 upper=20 default=2
+@hyperparameter dt::max_features float lower=0.0 upper=1.0 default=0.5
+@hyperparameter dt::min_samples_leaf int lower=1 upper=20 default=1
+@hyperparameter dt::class_weight categorical values=balanced default=None
+
+@hyperparameter rf::n_estimators int lower=10 upper=100 default=100
+@hyperparameter rf::criterion categorical values=gini;entropy default=gini
+@hyperparameter rf::max_features union (categorical values=sqrt;log2 default=None  , float lower=0.5 upper=1.0 default=0.5)
+@hyperparameter rf::min_samples_split int lower=2 upper=20 default=2
+@hyperparameter rf::min_samples_leaf int lower=1 upper=20 default=1
+@hyperparameter rf::bootstrap bool default=True
+@hyperparameter rf::class_weight categorical values=balanced;balanced_subsample default=None
+
+@hyperparameter etc::n_estimators int lower=10 upper=100 default=100
+@hyperparameter etc::criterion categorical values=gini;entropy default=gini
+@hyperparameter etc::max_features categorical values=sqrt;log2 default=sqrt
+@hyperparameter etc::min_samples_split int lower=2 upper=20 default=2
+@hyperparameter etc::min_samples_leaf int lower=1 upper=20 default=1
+@hyperparameter etc::bootstrap bool default=False
+@hyperparameter etc::class_weight categorical values=balanced;balanced_subsample default=None
+
+@hyperparameter ada::estimator estimator estimators=estimators
+@hyperparameter ada::n_estimators int lower=10 upper=100 default=50
+@hyperparameter ada::learning_rate float log lower=0.01 upper=2.0 default=0.1
+@hyperparameter ada::algorithm categorical values=SAMME default=SAMME
+
+@hyperparameter knn::n_neighbors int log lower=1 upper=50 default=1
+@hyperparameter knn::weights categorical values=uniform;distance default=uniform
+@hyperparameter knn::p int lower=1 upper=2 default=2
+
+@hyperparameter gau::var_smoothing float log lower=1e-9 upper=1e-2 default=1e-9
+
+@hyperparameter ber::alpha float log lower=1e-2 upper=100.0 default=1.0
+@hyperparameter ber::fit_prior bool default=True
+
+@hyperparameter mnb::alpha float log lower=1e-2 upper=100.0 default=1.0
+@hyperparameter mnb::fit_prior bool default=True
+
+@hyperparameter lr::penalty categorical values=l1;l2;None default=l2
+@hyperparameter lr::solver categorical values=lbfgs;liblinear;newton-cg;sag;saga default=lbfgs
+@hyperparameter lr::max_iter fix_int value=1000
+@hyperparameter lr::C float log lower=1e-4 upper=25.0 default=1.0
+@hyperparameter lr::class_weight categorical values=balanced default=None
+
+@hyperparameter qda::reg_param float lower=0.0 upper=1.0 default=0.0
+
+@hyperparameter lda::shrinkage_factor float lower=0.0 upper=1.0 default=0.5
+@hyperparameter lda::n_components int lower=1 upper=250 default=50
+@hyperparameter lda::tol float log lower=1e-5 upper=1e-1 default=1e-4
+
+@hyperparameter mlp::hidden_layer_sizes tuple (int lower=10 upper=100 default=100 , int lower=1 upper=20 default=10)
+@hyperparameter mlp::alpha float log lower=1e-4 upper=1e-1 default=1e-2
+@hyperparameter mlp::learning_rate_init float log lower=1e-3 upper=1.0 default=1e-2
+@hyperparameter mlp::solver categorical values=lbfgs;sgd;adam default=adam
+@hyperparameter mlp::activation categorical values=identity;logistic;tanh;relu default=relu
+
+
+#################################
+# STRUCTURE GRAMMAR
+#################################
+
+workflow =
+    classifier
+    preprocessingBranch;classifier;
+
+preprocessingBranch =
+    preprocess
+    preprocessingBranch;preprocess;
+
+
+#################################
+# CLASSIFIERS
+#################################
+
+classifier =
+    randomForest(randomForest_hp)
+    extraTreesClassifier(extraTreesClassifier_hp)
+    adaBoost(adaBoost_hp)
+    qda(qda_hp)
+    lda(lda_hp)
+    gaussianNB(gaussianNB_hp)
+    bernoulliNB(bernoulliNB_hp)
+    multinomialNB(multinomialNB_hp)
+    logisticRegression(logisticRegression_hp)
+    kNN(kNN_hp)
+    decisionTree(decisionTree_hp)
+    mlpClassifier(mlpClassifier_hp);
+
+
+estimators =
+    decisionTree(decisionTree_hp);
+
+
+#################################
+# PREPROCESSING
+#################################
+
+preprocess =
+    selectPercentile(selectPercentile_hp)
+    selectFwe(selectFwe_hp)
+    varianceThreshold
+    minMaxScaler
+    maxAbsScaler
+    robustScaler(robustScaler_hp)
+    pca(pca_hp)
+    fastICA(fastICA_hp)
+    nystroem(nystroem_hp);
+
+
+#################################
+# HYPERPARAMETER GROUPS
+#################################
+
+randomForest_hp =
+    rf::n_estimators;rf::criterion;rf::max_features;rf::min_samples_split;rf::min_samples_leaf;rf::bootstrap;rf::class_weight;
+
+extraTreesClassifier_hp =
+    etc::n_estimators;etc::criterion;etc::max_features;etc::min_samples_split;etc::min_samples_leaf;etc::bootstrap;etc::class_weight;
+
+adaBoost_hp =
+    ada::estimator;ada::n_estimators;ada::learning_rate;ada::algorithm;
+
+qda_hp = 
+    qda::reg_param;
+
+lda_hp =
+    lda::shrinkage_factor;lda::n_components;lda::tol;
+
+gaussianNB_hp = 
+    gau::var_smoothing;
+
+bernoulliNB_hp = 
+    ber::alpha;ber::fit_prior;
+
+multinomialNB_hp =
+    mnb::alpha;mnb::fit_prior;
+
+logisticRegression_hp =
+    lr::penalty;lr::solver;lr::max_iter;lr::C;lr::class_weight;
+
+kNN_hp =
+    knn::n_neighbors;knn::weights;knn::p;
+
+decisionTree_hp =
+    dt::criterion;dt::max_depth;dt::min_samples_split;dt::max_features;dt::min_samples_leaf;dt::class_weight;
+
+mlpClassifier_hp =
+    mlp::hidden_layer_sizes;mlp::alpha;mlp::learning_rate_init;mlp::solver;mlp::activation;
+
+nystroem_hp =
+    nyss::kernel;nyss::gamma;nyss::n_components;nyss::degree;nyss::coef0;
+
+fastICA_hp =
+    ica::n_components;ica::algorithm;ica::whiten;ica::fun;
+
+selectPercentile_hp = 
+    sp::percentile ;
+
+selectFwe_hp = 
+    fwe::alpha ;
+
+robustScaler_hp =
+    rs::with_centering;rs::with_scaling;
+
+pca_hp =
+    pca::n_components;pca::whiten;

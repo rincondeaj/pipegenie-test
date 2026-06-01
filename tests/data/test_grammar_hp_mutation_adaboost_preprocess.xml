@@ -1,0 +1,71 @@
+<grammar>
+    <!--  Root -->
+    <root-symbol>workflow</root-symbol>
+     
+    <!-- Terminals -->
+    <terminals>
+
+        <!-- PREPROCESSING -->
+
+        <terminal name="minMaxScaler" type="scaler" code="sklearn.preprocessing.MinMaxScaler"/>
+            <terminal name="mms::argument" type="int" lower="1" upper="10" default="1" log="True"/>
+
+        <!-- CLASSIFIERS --> 
+
+        <terminal name="decisionTree" type="tree" code="sklearn.tree.DecisionTreeClassifier"/>
+            <terminal name="dt::max_depth" type="int" lower="1" upper="100" default="10"/>
+
+        <terminal name="kNN" type="neighbors" code="sklearn.neighbors.KNeighborsClassifier"/>
+            <terminal name="knn::n_neighbors" type="int" lower="1" upper="100" default="1" log="True"/>
+
+        <terminal name="adaBoost" type="ensemble" code="sklearn.ensemble.AdaBoostClassifier"/>
+            <terminal name="ada::estimator" type="estimator" estimators="estimators"/>
+
+    </terminals>
+     
+    <!-- Non terminals: are represented as production rules -->
+    <non-terminals>
+ 
+        <!-- Structure definition -->
+        <non-terminal name="workflow">
+            <production-rule>preprocess;classifier</production-rule>
+        </non-terminal>
+ 
+        <!-- CLASSIFIERS -->
+        <non-terminal name="classifier">
+            <production-rule>adaBoost(adaBoost_hp)</production-rule>
+        </non-terminal>
+
+        <!-- ESTIMATOR HYPERPARAMETER -->
+
+        <non-terminal name="estimators">
+            <production-rule>decisionTree(decisionTree_hp)</production-rule>
+            <production-rule>kNN(kNN_hp)</production-rule>
+        </non-terminal>
+        
+        <!-- PREPROCESSING -->
+        <non-terminal name="preprocess">
+            <!-- scaler -->
+            <production-rule>minMaxScaler(minMaxScaler_hp)</production-rule>
+        </non-terminal>
+
+        <!-- HYPERPARAMETERS -->
+
+        <non-terminal name="adaBoost_hp">
+            <production-rule>ada::estimator</production-rule>
+        </non-terminal>
+
+        <non-terminal name="kNN_hp">
+            <production-rule>knn::n_neighbors</production-rule>
+        </non-terminal>
+
+        <non-terminal name="decisionTree_hp">
+            <production-rule>dt::max_depth</production-rule>
+        </non-terminal>
+
+        <non-terminal name="minMaxScaler_hp">
+            <production-rule>mms::argument</production-rule>
+        </non-terminal>
+
+    </non-terminals>
+</grammar>

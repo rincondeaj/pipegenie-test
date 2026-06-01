@@ -1,0 +1,66 @@
+@root workflow
+
+#################################
+# ALGORITHMS
+#################################
+
+@algorithm minMaxScaler sklearn.preprocessing.MinMaxScaler scaler
+@algorithm maxAbsScaler sklearn.preprocessing.MaxAbsScaler scaler
+
+@algorithm decisionTree sklearn.tree.DecisionTreeClassifier tree
+@algorithm kNN sklearn.neighbors.KNeighborsClassifier neighbors
+
+#################################
+# HYPERPARAMETERS
+#################################
+
+@hyperparameter dt::criterion categorical values=gini;entropy default=gini
+@hyperparameter dt::max_depth int lower=1 upper=30 default=10
+@hyperparameter dt::min_samples_split int lower=2 upper=20 default=2
+@hyperparameter dt::max_features float lower=0.0 upper=1.0 default=0.5
+@hyperparameter dt::min_samples_leaf int lower=1 upper=20 default=1
+@hyperparameter dt::class_weight categorical values=balanced default=None
+
+@hyperparameter knn::n_neighbors int log lower=1 upper=50 default=1
+@hyperparameter knn::weights categorical values=uniform;distance default=uniform
+@hyperparameter knn::p int lower=1 upper=2 default=2
+
+#################################
+# STRUCTURE GRAMMAR
+#################################
+
+workflow =
+    classifier
+    preprocessingBranch;classifier;
+
+preprocessingBranch =
+    preprocess
+    preprocessingBranch;preprocess;
+
+
+#################################
+# CLASSIFIERS
+#################################
+
+classifier =
+    kNN(kNN_hp)
+    decisionTree(decisionTree_hp)
+
+#################################
+# PREPROCESSING
+#################################
+
+preprocess =
+    minMaxScaler
+    maxAbsScaler
+
+
+#################################
+# HYPERPARAMETER GROUPS
+#################################
+
+kNN_hp =
+    knn::n_neighbors;knn::weights;knn::p;
+
+decisionTree_hp =
+    dt::criterion;dt::max_depth;dt::min_samples_split;dt::max_features;dt::min_samples_leaf;dt::class_weight;

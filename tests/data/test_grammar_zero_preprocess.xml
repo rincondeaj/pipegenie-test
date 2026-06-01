@@ -1,0 +1,38 @@
+<grammar>
+    <!--  Root -->
+    <root-symbol>workflow</root-symbol>
+     
+    <!-- Terminals -->
+    <terminals>
+
+        <!-- CLASSIFIERS --> 
+        <!-- neighbors -->
+
+        <terminal name="kNN" type="neighbors" code="sklearn.neighbors.KNeighborsClassifier"/>
+            <terminal name="knn::n_neighbors" type="int" lower="1" upper="50" default="1" log="True"/>
+            <terminal name="knn::weights" type="categorical" values="uniform;distance" default="uniform"/>
+            <terminal name="knn::p" type="int" lower="1" upper="2" default="2"/>
+
+    </terminals>
+     
+    <!-- Non terminals: are represented as production rules -->
+    <non-terminals>
+ 
+        <!-- Structure definition -->
+        <non-terminal name="workflow">
+            <production-rule>classifier</production-rule>
+        </non-terminal>
+ 
+        <!-- CLASSIFIERS -->
+        <non-terminal name="classifier">
+            <!-- neighbors -->
+            <production-rule>kNN(kNN_hp)</production-rule>
+        </non-terminal>
+
+        <!-- HYPERPARAMETERS -->
+        <non-terminal name="kNN_hp">
+            <production-rule>knn::n_neighbors;knn::weights;knn::p</production-rule>
+        </non-terminal>
+
+    </non-terminals>
+</grammar>

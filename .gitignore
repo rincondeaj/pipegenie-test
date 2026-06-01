@@ -1,0 +1,30 @@
+# Compiled python files
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+pipegenie-venv/
+
+# Package directories
+__pycache__/
+
+# Distribution files
+*.egg
+*.egg-info/
+dist/
+build/
+
+# IDE files
+.idea/
+.vscode/
+
+# Output files
+*.out
+
+# Extras
+docs/conversor.py
+
+# Test output folder
+tests/test_results/

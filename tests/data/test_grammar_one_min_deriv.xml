@@ -1,0 +1,76 @@
+<grammar>
+    <!--  Root -->
+    <root-symbol>workflow</root-symbol>
+     
+    <!-- Terminals -->
+    <terminals>
+
+        <!-- PREPROCESSING -->
+
+        <!-- scaler -->
+
+        <terminal name="minMaxScaler" type="scaler" code="sklearn.preprocessing.MinMaxScaler"/>
+        <terminal name="maxAbsScaler" type="scaler" code="sklearn.preprocessing.MaxAbsScaler"/>
+
+        <!-- CLASSIFIERS --> 
+
+        <!-- tree -->
+
+        <terminal name="decisionTree" type="tree" code="sklearn.tree.DecisionTreeClassifier"/>
+            <terminal name="dt::criterion" type="categorical" values="gini;entropy" default="gini"/>
+            <terminal name="dt::max_depth" type="int" lower="1" upper="30" default="10"/>
+            <terminal name="dt::min_samples_split" type="int" lower="2" upper="20" default="2"/>
+            <terminal name="dt::max_features" type="float" lower="0" upper="1" default="0.5"/>
+            <terminal name="dt::min_samples_leaf" type="int" lower="1" upper="20" default="1"/>
+            <terminal name="dt::class_weight" type="categorical" values="balanced" default="None"/>
+
+        <!-- neighbors -->
+
+        <terminal name="kNN" type="neighbors" code="sklearn.neighbors.KNeighborsClassifier"/>
+            <terminal name="knn::n_neighbors" type="int" lower="1" upper="50" default="1" log="True"/>
+            <terminal name="knn::weights" type="categorical" values="uniform;distance" default="uniform"/>
+            <terminal name="knn::p" type="int" lower="1" upper="2" default="2"/>
+
+    </terminals>
+     
+    <!-- Non terminals: are represented as production rules -->
+    <non-terminals>
+ 
+        <!-- Structure definition -->
+        <non-terminal name="workflow">
+            <production-rule>classifier</production-rule>
+            <production-rule>preprocessingBranch;classifier</production-rule>
+            <production-rule>minMaxScaler</production-rule>
+        </non-terminal>
+
+        <non-terminal name="preprocessingBranch">
+            <production-rule>preprocess</production-rule>
+            <production-rule>preprocessingBranch;preprocess</production-rule>
+        </non-terminal>
+ 
+        <!-- CLASSIFIERS -->
+        <non-terminal name="classifier">
+            <!-- neighbors -->
+            <production-rule>kNN(kNN_hp)</production-rule>
+            <!-- tree -->
+            <production-rule>decisionTree(decisionTree_hp)</production-rule>
+        </non-terminal>
+
+        <!-- PREPROCESSING -->
+        <non-terminal name="preprocess">
+            <!-- scaler -->
+            <production-rule>minMaxScaler</production-rule>
+            <production-rule>maxAbsScaler</production-rule>
+        </non-terminal>
+
+        <!-- HYPERPARAMETERS -->
+        <non-terminal name="kNN_hp">
+            <production-rule>knn::n_neighbors;knn::weights;knn::p</production-rule>
+        </non-terminal>
+
+        <non-terminal name="decisionTree_hp">
+            <production-rule>dt::criterion;dt::max_depth;dt::min_samples_split;dt::max_features;dt::min_samples_leaf;dt::class_weight</production-rule>
+        </non-terminal>
+
+    </non-terminals>
+</grammar>
