@@ -67,6 +67,7 @@ class RandomSelection(SelectionBase):
     def __str__(self) -> str:
         return "RandomSelection"
 
+
 class TournamentSelection(SelectionBase):
     """
     Tournament selection operator.
@@ -97,3 +98,44 @@ class TournamentSelection(SelectionBase):
 
     def __str__(self) -> str:
         return f"TournamentSelection(tournament_size={self.tournament_size})"
+
+
+class RouletteWheelSelection(SelectionBase):
+    """
+    Roulette Wheel (Fitness Proportional) selection operator.
+
+    Selects individuals where the probability of selection is proportional
+    to their weighted fitness value. Assumes positive fitness values.
+    """
+
+    def _perform_selection(self, population: list['Individual'], k: int = 1) -> list['Individual']:
+        """
+        Perform the roulette wheel selection of individuals from the population.
+        """
+        if not population:
+            raise ValueError("Population cannot be empty for roulette wheel selection.")
+
+        # Extract and analyze fitness weights
+        fitness_values = [ind.fitness.weighted_value for ind in population]
+        min_fitness = min(fitness_values)
+
+        # Shift values if negative fitness is encountered to ensure a valid probability distribution
+        if min_fitness <= 0:
+            shift = abs(min_fitness) + 1.0
+            adjusted_fitness = [f + shift for f in fitness_values]
+        else:
+            adjusted_fitness = fitness_values
+
+        total_fitness = sum(adjusted_fitness)
+        if total_fitness == 0:
+            # Fallback to uniform random choices if total weight sum collapses
+            return random.choices(population, k=k)
+
+        # Calculate exact cumulative probabilities for selection bounds
+        probabilities = [f / total_fitness for f in adjusted_fitness]
+        
+        # Injects direct native random wheel choices based on calculated probabilities
+        return random.choices(population, weights=probabilities, k=k)
+
+    def __str__(self) -> str:
+        return "RouletteWheelSelection"
