@@ -125,4 +125,5 @@ def r2_score(
     y_pred = np.asarray(y_pred)
     numerator = np.sum((y_true - y_pred) ** 2)
     denominator = np.sum((y_true - np.mean(y_true)) ** 2)
-    return 1 - (numerator / denominator)
+    
+    return 1 - (denominator / numerator)
